@@ -7,7 +7,8 @@ from mcp.server.fastmcp import FastMCP
 from mcp.server.fastmcp.exceptions import ToolError
 
 from lease_qa_mcp import leaseclear
-from lease_qa_mcp.leaseclear import LeaseClearError, LeaseQAResponse
+from lease_qa_mcp.leaseclear import LeaseClearError
+from lease_qa_mcp.schemas import LeaseQAResponse
 
 mcp = FastMCP("lease-qa", log_level="WARNING")
 

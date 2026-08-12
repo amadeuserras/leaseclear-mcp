@@ -4,17 +4,12 @@ import json
 from uuid import UUID
 
 import httpx
-from pydantic import BaseModel, ConfigDict
 
 from lease_qa_mcp.config import settings
+from lease_qa_mcp.schemas import LeaseQAResponse
 
 _TIMEOUT = 60.0
 _token: str | None = None
-
-
-class LeaseQAResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True, extra="forbid")
-    answer: str
 
 
 class LeaseClearError(Exception):
