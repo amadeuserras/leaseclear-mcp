@@ -1,6 +1,10 @@
 # Editor
 .vscode/
 
+# Python
 .venv/
 .ruff_cache/
 __pycache__/
+
+# Local env
+.env
