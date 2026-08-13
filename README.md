@@ -1,6 +1,6 @@
 # lease-qa-mcp
 
-A standalone [MCP](https://modelcontextprotocol.io) server that exposes lease Q&A as one tool: `lease_qa`. It asks [LeaseClear](https://github.com/amadeuserras/leaseclear) a question about a specific lease document and returns a grounded answer.
+A standalone [MCP](https://modelcontextprotocol.io) server that exposes lease Q&A as one tool: `lease_qa`. It asks [LeaseClear](https://github.com/amadeuserras/leaseclear) a question about lease terms and returns a grounded answer.
 
 ## Runs where your data lives
 
@@ -57,16 +57,16 @@ That starts the MCP server on stdio (how Cursor, Claude Desktop, and other MCP h
 | | |
 | --- | --- |
 | **Arguments** | `question` (string) — one neutral question about lease terms |
-| **Metadata** | `document_id` (UUID) — which lease to query; **not** an LLM-visible argument |
+| **Metadata** | `document_ids` (list of UUIDs, optional) — which leases to query; **not** an LLM-visible argument |
 | **Returns** | `{ "answer": "..." }` — LeaseClear’s grounded answer (or that the lease is silent) |
 
-`document_id` is passed in request metadata on purpose. The model only chooses the question; the host chooses which document is in scope. That keeps untrusted text from picking another tenant’s lease.
+If the host passes `document_ids`, the question is scoped to those leases. If omitted, LeaseClear searches all leases on the authenticated account. The model only chooses the question; the host chooses whether to scope.
 
 ### Errors
 
 Failures surface as MCP tool errors, including:
 
-- missing / invalid `document_id` in metadata
+- invalid `document_ids` in metadata
 - empty question
 - LeaseClear auth or query failures
 - LeaseClear unreachable

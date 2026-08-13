@@ -36,7 +36,7 @@ async def _read_sse_answer(response: httpx.Response) -> str | None:
     return None
 
 
-async def _get_token() -> str:
+async def _get_demo_token() -> str:
     global _token
     if _token is not None:
         return _token
@@ -59,12 +59,14 @@ async def _get_token() -> str:
     return token
 
 
-async def _query(question: str, document_id: UUID, token: str) -> str:
+async def _query(question: str, document_ids: list[UUID] | None, token: str) -> str:
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "text/event-stream",
     }
-    payload = {"question": question, "document_ids": [str(document_id)]}
+    payload: dict[str, object] = {"question": question}
+    if document_ids:
+        payload["document_ids"] = [str(id) for id in document_ids]
     async with (
         httpx.AsyncClient(
             base_url=settings.leaseclear_base_url, timeout=_TIMEOUT
@@ -82,7 +84,7 @@ async def _query(question: str, document_id: UUID, token: str) -> str:
     return answer
 
 
-async def ask(question: str, document_id: UUID) -> LeaseQAResponse:
-    token = await _get_token()
-    answer = await _query(question, document_id, token)
+async def ask(question: str, document_ids: list[UUID] | None = None) -> LeaseQAResponse:
+    token = await _get_demo_token()
+    answer = await _query(question, document_ids, token)
     return LeaseQAResponse(answer=answer)
