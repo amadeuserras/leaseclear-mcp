@@ -13,6 +13,7 @@ from lease_qa_mcp.leaseclear import LeaseClearError
 from lease_qa_mcp.schemas import LeaseQAResponse
 
 mcp = FastMCP("lease-qa", log_level="WARNING")
+
 _DOCUMENT_IDS: TypeAdapter[list[UUID] | None] = TypeAdapter(list[UUID] | None)
 
 
