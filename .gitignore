@@ -4,6 +4,7 @@
 # Python
 .venv/
 .ruff_cache/
+.pytest_cache/
 __pycache__/
 
 # Local env
