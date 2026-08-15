@@ -12,7 +12,7 @@ from mcp.shared.memory import create_connected_server_and_client_session
 from lease_qa_mcp.schemas import LeaseQAResponse
 from lease_qa_mcp.server import lease_qa, mcp
 
-_DOC_ID = "11111111-1111-1111-1111-111111111111"
+_DOC_ID = UUID("11111111-1111-1111-1111-111111111111")
 
 
 def _ctx(*, document_ids: object | None = None) -> MagicMock:
@@ -31,7 +31,7 @@ def ask() -> Iterator[AsyncMock]:
     ("meta", "document_ids"),
     [
         (None, None),
-        ({"document_ids": [_DOC_ID]}, [UUID(_DOC_ID)]),
+        ({"document_ids": [str(_DOC_ID)]}, [_DOC_ID]),
     ],
 )
 async def test_client_forwards_question_and_returns_answer(
