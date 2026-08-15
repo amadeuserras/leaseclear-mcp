@@ -28,6 +28,8 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 include = ["src"]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
