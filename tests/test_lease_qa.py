@@ -3,12 +3,16 @@ from __future__ import annotations
 from collections.abc import Iterator
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
+from uuid import UUID
 
 import pytest
 from mcp.server.fastmcp.exceptions import ToolError
+from mcp.shared.memory import create_connected_server_and_client_session
 
 from lease_qa_mcp.schemas import LeaseQAResponse
-from lease_qa_mcp.server import lease_qa
+from lease_qa_mcp.server import lease_qa, mcp
+
+_DOC_ID = "11111111-1111-1111-1111-111111111111"
 
 
 def _ctx(*, document_ids: object | None = None) -> MagicMock:
@@ -23,11 +27,28 @@ def ask() -> Iterator[AsyncMock]:
         yield mock
 
 
-async def test_forwards_question_and_returns_answer(ask: AsyncMock) -> None:
+@pytest.mark.parametrize(
+    ("meta", "document_ids"),
+    [
+        (None, None),
+        ({"document_ids": [_DOC_ID]}, [UUID(_DOC_ID)]),
+    ],
+)
+async def test_client_forwards_question_and_returns_answer(
+    ask: AsyncMock,
+    meta: dict[str, object] | None,
+    document_ids: list[UUID] | None,
+) -> None:
     ask.return_value = LeaseQAResponse(answer="Rent is $2,875 per month.")
-    result = await lease_qa("What is the rent?", _ctx())
-    ask.assert_awaited_once_with("What is the rent?", None)
-    assert result == LeaseQAResponse(answer="Rent is $2,875 per month.")
+    async with create_connected_server_and_client_session(mcp) as session:
+        result = await session.call_tool(
+            "lease_qa",
+            arguments={"question": "What is the rent?"},
+            meta=meta,
+        )
+    assert not result.isError
+    assert result.structuredContent == {"answer": "Rent is $2,875 per month."}
+    ask.assert_awaited_once_with("What is the rent?", document_ids)
 
 
 @pytest.mark.parametrize("question", ["", "   ", "\n\t"])
