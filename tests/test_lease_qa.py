@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from mcp.server.fastmcp.exceptions import ToolError
 
+from lease_qa_mcp.schemas import LeaseQAResponse
 from lease_qa_mcp.server import lease_qa
 
 
@@ -20,6 +21,13 @@ def _ctx(*, document_ids: object | None = None) -> MagicMock:
 def ask() -> Iterator[AsyncMock]:
     with patch("lease_qa_mcp.server.leaseclear.ask", new_callable=AsyncMock) as mock:
         yield mock
+
+
+async def test_forwards_question_and_returns_answer(ask: AsyncMock) -> None:
+    ask.return_value = LeaseQAResponse(answer="Rent is $2,875 per month.")
+    result = await lease_qa("What is the rent?", _ctx())
+    ask.assert_awaited_once_with("What is the rent?", None)
+    assert result == LeaseQAResponse(answer="Rent is $2,875 per month.")
 
 
 @pytest.mark.parametrize("question", ["", "   ", "\n\t"])
