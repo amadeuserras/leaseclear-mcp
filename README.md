@@ -25,7 +25,7 @@ cp .env.example .env
 | Variable | Required | Meaning |
 | --- | --- | --- |
 | `LEASECLEAR_BASE_URL` | yes | Base URL of a running LeaseClear API (e.g. `http://localhost:8001`) |
-| `LEASECLEAR_API_KEY` | no | LeaseClear API key (`POST /auth/api-keys` while logged in). Query-only: asks questions as that user. Omit to use the public demo corpus. |
+| `LEASECLEAR_API_KEY` | no | LeaseClear API key (`POST /auth/api-key` while logged in). Query-only: asks questions as that user. Omit to use the public demo corpus. |
 
 If the key is set, this server sends it on `/query`. If omitted, it uses `/auth/demo` (no account needed).
 
