@@ -4,7 +4,7 @@ A standalone [MCP](https://modelcontextprotocol.io) server that exposes lease Q&
 
 ## Runs where your data lives
 
-This server is a thin stdio process. Point `LEASECLEAR_BASE_URL` at a LeaseClear instance on your machine or private network — documents stay in that environment. Nothing here hosts or uploads leases.
+This server is a thin stdio process. Point `LEASECLEAR_API_URL` at a LeaseClear instance on your machine or private network — documents stay in that environment. Nothing here hosts or uploads leases.
 
 ## Install
 
@@ -24,7 +24,7 @@ cp .env.example .env
 
 | Variable | Required | Meaning |
 | --- | --- | --- |
-| `LEASECLEAR_BASE_URL` | yes | Base URL of a running LeaseClear API (e.g. `http://localhost:8001`) |
+| `LEASECLEAR_API_URL` | yes | URL of a running LeaseClear API (e.g. `https://leaseclear-production.up.railway.app`) |
 | `LEASECLEAR_API_KEY` | no | LeaseClear API key (`POST /auth/api-key` while logged in). Query-only: asks questions as that user. Omit to use the public demo corpus. |
 
 If the key is set, this server sends it on `/query`. If omitted, it uses `/auth/demo` (no account needed).
@@ -46,7 +46,7 @@ That starts the MCP server on stdio (how Cursor, Claude Desktop, and other MCP h
       "command": "uv",
       "args": ["run", "--directory", "/absolute/path/to/lease-qa-mcp", "lease-qa-mcp"],
       "env": {
-        "LEASECLEAR_BASE_URL": "http://localhost:8001"
+        "LEASECLEAR_API_URL": "https://leaseclear-production.up.railway.app"
       }
     }
   }

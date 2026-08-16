@@ -54,7 +54,7 @@ async def _get_demo_token() -> str:
     if _demo_token is not None:
         return _demo_token
     async with httpx.AsyncClient(
-        base_url=settings.leaseclear_base_url, timeout=_TIMEOUT
+        base_url=settings.leaseclear_api_url, timeout=_TIMEOUT
     ) as client:
         response = await client.post("/auth/demo")
     if response.status_code == 503:
@@ -87,7 +87,7 @@ async def _query(question: str, document_ids: list[UUID] | None) -> str:
         payload["document_ids"] = [str(id) for id in document_ids]
     async with (
         httpx.AsyncClient(
-            base_url=settings.leaseclear_base_url, timeout=_TIMEOUT
+            base_url=settings.leaseclear_api_url, timeout=_TIMEOUT
         ) as client,
         client.stream("POST", "/query", json=payload, headers=headers) as response,
     ):
