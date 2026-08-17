@@ -8,9 +8,9 @@ from mcp.server.fastmcp import Context, FastMCP
 from mcp.server.fastmcp.exceptions import ToolError
 from pydantic import TypeAdapter, ValidationError
 
-from lease_qa_mcp import leaseclear
-from lease_qa_mcp.leaseclear import LeaseClearError
-from lease_qa_mcp.schemas import LeaseQAResponse
+from leaseclear_mcp import leaseclear
+from leaseclear_mcp.leaseclear import LeaseClearError
+from leaseclear_mcp.schemas import LeaseQAResponse
 
 mcp = FastMCP("lease-qa", log_level="WARNING")
 

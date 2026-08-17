@@ -305,7 +305,7 @@ wheels = [
 ]
 
 [[package]]
-name = "lease-qa-mcp"
+name = "leaseclear-mcp"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

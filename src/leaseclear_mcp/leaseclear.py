@@ -5,8 +5,8 @@ from uuid import UUID
 
 import httpx
 
-from lease_qa_mcp.config import settings
-from lease_qa_mcp.schemas import LeaseQAResponse
+from leaseclear_mcp.config import settings
+from leaseclear_mcp.schemas import LeaseQAResponse
 
 _TIMEOUT = 60.0
 _demo_token: str | None = None

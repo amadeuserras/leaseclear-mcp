@@ -9,9 +9,9 @@ from uuid import UUID
 import httpx
 import pytest
 
-from lease_qa_mcp import leaseclear
-from lease_qa_mcp.config import settings
-from lease_qa_mcp.leaseclear import LeaseClearError, ask
+from leaseclear_mcp import leaseclear
+from leaseclear_mcp.config import settings
+from leaseclear_mcp.leaseclear import LeaseClearError, ask
 
 _ANSWER = "Rent is $2,875 per month."
 _DOC_ID = UUID("11111111-1111-1111-1111-111111111111")
@@ -34,7 +34,7 @@ def _patched_client(
         kwargs["transport"] = transport
         return real_async_client(*args, **kwargs)
 
-    with patch("lease_qa_mcp.leaseclear.httpx.AsyncClient", side_effect=factory):
+    with patch("leaseclear_mcp.leaseclear.httpx.AsyncClient", side_effect=factory):
         yield
 
 

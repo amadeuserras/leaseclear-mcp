@@ -1,4 +1,4 @@
-# lease-qa-mcp
+# leaseclear-mcp
 
 A standalone [MCP](https://modelcontextprotocol.io) server that exposes lease Q&A as one tool: `lease_qa`. It asks [LeaseClear](https://github.com/amadeuserras/leaseclear) a question about lease terms and returns a grounded answer.
 
@@ -11,8 +11,8 @@ This server is a thin stdio process. Point `LEASECLEAR_API_URL` at a LeaseClear 
 Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-git clone https://github.com/amadeuserras/lease-qa-mcp.git
-cd lease-qa-mcp
+git clone https://github.com/amadeuserras/leaseclear-mcp.git
+cd leaseclear-mcp
 uv sync
 ```
 
@@ -32,7 +32,7 @@ If the key is set, this server sends it on `/query`. If omitted, it uses `/auth/
 ## Run
 
 ```bash
-uv run lease-qa-mcp
+uv run leaseclear-mcp
 ```
 
 That starts the MCP server on stdio (how Cursor, Claude Desktop, and other MCP hosts talk to it).
@@ -44,7 +44,7 @@ That starts the MCP server on stdio (how Cursor, Claude Desktop, and other MCP h
   "mcpServers": {
     "lease-qa": {
       "command": "uv",
-      "args": ["run", "--directory", "/absolute/path/to/lease-qa-mcp", "lease-qa-mcp"],
+      "args": ["run", "--directory", "/absolute/path/to/leaseclear-mcp", "leaseclear-mcp"],
       "env": {
         "LEASECLEAR_API_URL": "https://leaseclear-production.up.railway.app"
       }

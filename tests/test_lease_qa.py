@@ -9,8 +9,8 @@ import pytest
 from mcp.server.fastmcp.exceptions import ToolError
 from mcp.shared.memory import create_connected_server_and_client_session
 
-from lease_qa_mcp.schemas import LeaseQAResponse
-from lease_qa_mcp.server import lease_qa, mcp
+from leaseclear_mcp.schemas import LeaseQAResponse
+from leaseclear_mcp.server import lease_qa, mcp
 
 _DOC_ID = UUID("11111111-1111-1111-1111-111111111111")
 
@@ -23,7 +23,7 @@ def _ctx(*, document_ids: object | None = None) -> MagicMock:
 
 @pytest.fixture
 def ask() -> Iterator[AsyncMock]:
-    with patch("lease_qa_mcp.server.leaseclear.ask", new_callable=AsyncMock) as mock:
+    with patch("leaseclear_mcp.server.leaseclear.ask", new_callable=AsyncMock) as mock:
         yield mock
 
 
