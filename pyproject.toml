@@ -2,6 +2,10 @@
 name = "leaseclear-mcp"
 version = "0.1.0"
 description = "Standalone MCP server exposing LeaseClear Q&A as an MCP tool"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Amadeu Serras" }]
 requires-python = ">=3.12"
 dependencies = [
     "mcp[cli]>=1.27,<2",
@@ -9,6 +13,11 @@ dependencies = [
     "pydantic>=2.0",
     "pydantic-settings>=2.14",
 ]
+
+[project.urls]
+Homepage = "https://github.com/amadeuserras/leaseclear-mcp"
+Repository = "https://github.com/amadeuserras/leaseclear-mcp"
+
 
 [project.scripts]
 leaseclear-mcp = "leaseclear_mcp.server:main"

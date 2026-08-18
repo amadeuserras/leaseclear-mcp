@@ -1,41 +1,36 @@
 # leaseclear-mcp
 
-A standalone [MCP](https://modelcontextprotocol.io) server that exposes lease Q&A as one tool: `lease_qa`. It asks [LeaseClear](https://github.com/amadeuserras/leaseclear) a question about lease terms and returns a grounded answer.
+A standalone [MCP](https://modelcontextprotocol.io) server that exposes lease Q&A as one tool: `lease_qa`. It asks hosted [LeaseClear](https://github.com/amadeuserras/leaseclear) a question about lease terms and returns a grounded answer.
 
-## Runs where your data lives
-
-This server is a thin stdio process. Point `LEASECLEAR_API_URL` at a LeaseClear instance on your machine or private network — documents stay in that environment. Nothing here hosts or uploads leases.
+This is a thin stdio process. By default it calls the public LeaseClear API. Override `LEASECLEAR_API_URL` only if you run your own instance.
 
 ## Install
 
-Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
+Requires Python 3.12+.
 
 ```bash
-git clone https://github.com/amadeuserras/leaseclear-mcp.git
-cd leaseclear-mcp
-uv sync
+uvx leaseclear-mcp
 ```
+
+Or:
+
+```bash
+pip install leaseclear-mcp
+leaseclear-mcp
+```
+
+That starts the MCP server on stdio.
 
 ## Configure
 
-```bash
-cp .env.example .env
-```
-
 | Variable | Required | Meaning |
 | --- | --- | --- |
-| `LEASECLEAR_API_URL` | yes | URL of a running LeaseClear API (e.g. `https://leaseclear-production.up.railway.app`) |
+| `LEASECLEAR_API_URL` | no | LeaseClear API URL. Defaults to `https://leaseclear-production.up.railway.app`. Set this for a local or private instance. |
 | `LEASECLEAR_API_KEY` | no | LeaseClear API key (`POST /auth/api-key` while logged in). Query-only: asks questions as that user. Omit to use the public demo corpus. |
 
 If the key is set, this server sends it on `/query`. If omitted, it uses `/auth/demo` (no account needed).
 
-## Run
-
-```bash
-uv run leaseclear-mcp
-```
-
-That starts the MCP server on stdio (how Cursor, Claude Desktop, and other MCP hosts talk to it).
+From a git checkout you can copy `.env.example` to `.env`. After `pip` / `uvx`, set overrides in the MCP host `env` block instead.
 
 ### Cursor / Claude Desktop example
 
@@ -43,10 +38,23 @@ That starts the MCP server on stdio (how Cursor, Claude Desktop, and other MCP h
 {
   "mcpServers": {
     "lease-qa": {
-      "command": "uv",
-      "args": ["run", "--directory", "/absolute/path/to/leaseclear-mcp", "leaseclear-mcp"],
+      "command": "uvx",
+      "args": ["leaseclear-mcp"]
+    }
+  }
+}
+```
+
+To use your own account (or a self-hosted API), add `env`:
+
+```json
+{
+  "mcpServers": {
+    "lease-qa": {
+      "command": "uvx",
+      "args": ["leaseclear-mcp"],
       "env": {
-        "LEASECLEAR_API_URL": "https://leaseclear-production.up.railway.app"
+        "LEASECLEAR_API_KEY": "lc_…"
       }
     }
   }
@@ -75,6 +83,11 @@ Failures surface as MCP tool errors, including:
 ## Development
 
 ```bash
+git clone https://github.com/amadeuserras/leaseclear-mcp.git
+cd leaseclear-mcp
+uv sync
+cp .env.example .env
+uv run leaseclear-mcp
 uv run ruff check .
 uv run pyright
 ```
