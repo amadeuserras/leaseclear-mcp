@@ -62,7 +62,7 @@ The package is on [PyPI](https://pypi.org/project/leaseclear-mcp/). `uvx` fetche
 [`_meta`](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#_meta) is MCP's reserved field for additional metadata on a request that the model can't see or set. That's a deliberate anti-prompt injection choice: the host app decides which lease(s) are in scope, and the model can only ask the question.
 
 > [!WARNING]
-> Without `document_ids`, a model can query any document the LeaseClear account can access. See [LeaseOps: prompt injection and the tenants table](https://github.com/amadeuserras/leaseops#security-prompt-injection-and-the-tenants-table).
+> Without `document_ids`, a model can query any document the LeaseClear account can access. See a real-world example in [LeaseOps: prompt injection and the tenants table](https://github.com/amadeuserras/leaseops#security-prompt-injection-and-the-tenants-table).
 
 Python `ClientSession.call_tool` example:
 
