@@ -4,6 +4,8 @@ A [Model Context Protocol](https://modelcontextprotocol.io) server that exposes 
 
 <!-- mcp-name: io.github.amadeuserras/leaseclear-mcp -->
 
+Listed in the [official MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.amadeuserras/leaseclear-mcp`.
+
 ## Tools
 
 - `lease_qa` — ask one question about lease terms; returns an answer grounded in the lease, or states that the lease is silent
