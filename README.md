@@ -1,38 +1,16 @@
 # leaseclear-mcp
 
-A standalone [MCP](https://modelcontextprotocol.io) server that exposes lease Q&A as one tool: `lease_qa`. It asks hosted [LeaseClear](https://github.com/amadeuserras/leaseclear) a question about lease terms and returns a grounded answer.
+A [Model Context Protocol](https://modelcontextprotocol.io) server that exposes [LeaseClear](https://github.com/amadeuserras/leaseclear) lease Q&A.
 
-This is a thin stdio process. By default it calls the public LeaseClear API. Override `LEASECLEAR_API_URL` only if you run your own instance.
+## Tools
 
-## Install
+- `lease_qa` — ask one question about lease terms; returns an answer grounded in the lease, or states that the lease is silent
 
-Requires Python 3.12+.
+## Installation
 
-```bash
-uvx leaseclear-mcp
-```
+Requires [uv](https://docs.astral.sh/uv/getting-started/installation/).
 
-Or:
-
-```bash
-pip install leaseclear-mcp
-leaseclear-mcp
-```
-
-That starts the MCP server on stdio.
-
-## Configure
-
-| Variable | Required | Meaning |
-| --- | --- | --- |
-| `LEASECLEAR_API_URL` | no | LeaseClear API URL. Defaults to `https://leaseclear-production.up.railway.app`. Set this for a local or private instance. |
-| `LEASECLEAR_API_KEY` | no | LeaseClear API key (`POST /auth/api-key` while logged in). Query-only: asks questions as that user. Omit to use the public demo corpus. |
-
-If the key is set, this server sends it on `/query`. If omitted, it uses `/auth/demo` (no account needed).
-
-From a git checkout you can copy `.env.example` to `.env`. After `pip` / `uvx`, set overrides in the MCP host `env` block instead.
-
-### Cursor / Claude Desktop example
+Add this to your MCP client config (e.g. `claude_desktop_config.json` or Cursor `mcp.json`):
 
 ```json
 {
@@ -45,7 +23,16 @@ From a git checkout you can copy `.env.example` to `.env`. After `pip` / `uvx`, 
 }
 ```
 
-To use your own account (or a self-hosted API), add `env`:
+The package is on [PyPI](https://pypi.org/project/leaseclear-mcp/). `uvx` fetches and runs it as a local subprocess, communicating over stdio, no local install needed.
+
+### Optional environment variables
+
+
+| Variable             | Description                                            | Default                       |
+| -------------------- | ------------------------------------------------------ | ----------------------------- |
+| `LEASECLEAR_API_KEY` | Use the server with your own LeaseClear account        | LeaseClear demo mode          |
+| `LEASECLEAR_API_URL` | Override the API endpoint (local or private instances) | LeaseClear production backend |
+
 
 ```json
 {
@@ -54,40 +41,98 @@ To use your own account (or a self-hosted API), add `env`:
       "command": "uvx",
       "args": ["leaseclear-mcp"],
       "env": {
-        "LEASECLEAR_API_KEY": "lc_…"
+        "LEASECLEAR_API_KEY": "lc_...",
+        "LEASECLEAR_API_URL": "https://..."
       }
     }
   }
 }
 ```
 
-## Tool: `lease_qa`
 
-| | |
-| --- | --- |
-| **Arguments** | `question` (string) — one neutral question about lease terms |
-| **Metadata** | `document_ids` (list of UUIDs, optional) — which leases to query; **not** an LLM-visible argument |
-| **Returns** | `{ "answer": "..." }` — LeaseClear’s grounded answer (or that the lease is silent) |
 
-If the host passes `document_ids`, the question is scoped to those leases. If omitted, LeaseClear searches all leases on the authenticated account. The model only chooses the question; the host chooses whether to scope.
+## `lease_qa`
 
-### Errors
+**Argument**
 
-Failures surface as MCP tool errors, including:
+- `question` (string, required) — one question about the lease
 
-- invalid `document_ids` in metadata
-- empty question
-- LeaseClear auth or query failures
-- LeaseClear unreachable
+`_meta` **(client / server only)**
 
-## Development
+- `document_ids` (string[], optional) — UUIDs of the documents to query. Omitted means all.
+
+`[_meta](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#_meta)` is MCP's reserved field for additional metadata on a request that the model can't see or set. That's a deliberate anti-prompt injection choice: the host app decides which lease(s) are in scope, and the model can only ask the question.
+
+> [!CAUTION]
+> Without `document_ids`, a model can query any document the LeaseClear account can access. See [LeaseOps: prompt injection and the tenants table](https://github.com/amadeuserras/leaseops#security-prompt-injection-and-the-tenants-table).
+
+Python `ClientSession.call_tool` example:
+
+```python
+result = await session.call_tool(
+    name="lease_qa",
+    arguments={
+        "question": "How much is the security deposit for Yuna Kim?"
+    },
+    meta={
+        "document_ids": [
+            "a1b2c3d4-e5f..."
+        ]
+    }
+)
+```
+
+Example output:
+
+```json
+{
+  "answer": "The security deposit is $6,400.00. This deposit is held in Owner's Broker's trust account [california-johnson-kim §4]."
+}
+```
+
+
+
+## Project structure
+
+```
+leaseclear-mcp/
+├── src/leaseclear_mcp/
+│   ├── server.py        # MCP server + lease_qa
+│   ├── leaseclear.py    # LeaseClear HTTP client
+│   ├── schemas.py
+│   └── config.py
+├── tests/
+├── pyproject.toml
+├── .env.example
+└── README.md
+```
+
+
+
+## Local Development
 
 ```bash
-git clone https://github.com/amadeuserras/leaseclear-mcp.git
+git clone https://github.com/you/leaseclear-mcp.git
 cd leaseclear-mcp
 uv sync
 cp .env.example .env
-uv run leaseclear-mcp
+uv run pytest
 uv run ruff check .
 uv run pyright
 ```
+
+
+
+### Debugging
+
+Use the [MCP Inspector](https://github.com/modelcontextprotocol/inspector) to test the server interactively:
+
+```bash
+npx @modelcontextprotocol/inspector uvx leaseclear-mcp
+```
+
+From a checkout, use `uv run leaseclear-mcp` instead of `uvx leaseclear-mcp`.
+
+## License
+
+MIT
