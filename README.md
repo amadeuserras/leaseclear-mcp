@@ -53,22 +53,21 @@ The package is on [PyPI](https://pypi.org/project/leaseclear-mcp/). `uvx` fetche
 
 
 
-## `lease_qa`
+## `lease_qa` usage
 
 **Argument**
 
 - `question` (string, required) — one question about the lease
 
-`_meta` **(client / server only)**
+`_meta`
 
 - `document_ids` (string[], optional) — UUIDs of the documents to query. Omitted means all.
 
-[`_meta`](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#_meta) is MCP's reserved field for additional metadata on a request that the model can't see or set. That's a deliberate anti-prompt injection choice: the host app decides which lease(s) are in scope, and the model can only ask the question.
+**Security**: The `_meta` field is used to pass metadata to the tool call that the model doesn't see. Having `document_ids` there is intentional: it prevents cross-document prompt injection because the model is never able to choose which documents it has access to. See a real-world example in [LeaseOps: prompt injection and the tenants table](https://github.com/amadeuserras/leaseops#security-prompt-injection-and-the-tenants-table).
 
-> [!WARNING]
-> Without `document_ids`, a model can query any document the LeaseClear account can access. See a real-world example in [LeaseOps: prompt injection and the tenants table](https://github.com/amadeuserras/leaseops#security-prompt-injection-and-the-tenants-table).
+## MCP Python SDK example
 
-Python `ClientSession.call_tool` example:
+Tool call:
 
 ```python
 result = await session.call_tool(
@@ -84,7 +83,7 @@ result = await session.call_tool(
 )
 ```
 
-Example output:
+Output:
 
 ```json
 {
