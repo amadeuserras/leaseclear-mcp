@@ -6,9 +6,7 @@ A [Model Context Protocol](https://modelcontextprotocol.io) server that exposes 
 
 - `lease_qa` — ask one question about lease terms; returns an answer grounded in the lease, or states that the lease is silent
 
-## Installation
-
-Requires [uv](https://docs.astral.sh/uv/getting-started/installation/).
+## Usage
 
 Add this to your MCP client config (e.g. `claude_desktop_config.json` or Cursor `mcp.json`):
 
@@ -23,7 +21,7 @@ Add this to your MCP client config (e.g. `claude_desktop_config.json` or Cursor 
 }
 ```
 
-The package is on [PyPI](https://pypi.org/project/leaseclear-mcp/). `uvx` fetches and runs it as a local subprocess, communicating over stdio, no local install needed.
+The package is on [PyPI](https://pypi.org/project/leaseclear-mcp/). `uvx` fetches and runs it as a local subprocess, communicating over stdio. [uv](https://docs.astral.sh/uv/getting-started/installation/) required.
 
 ### Optional environment variables
 
@@ -61,9 +59,9 @@ The package is on [PyPI](https://pypi.org/project/leaseclear-mcp/). `uvx` fetche
 
 - `document_ids` (string[], optional) — UUIDs of the documents to query. Omitted means all.
 
-`[_meta](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#_meta)` is MCP's reserved field for additional metadata on a request that the model can't see or set. That's a deliberate anti-prompt injection choice: the host app decides which lease(s) are in scope, and the model can only ask the question.
+[`_meta`](https://modelcontextprotocol.io/specification/2026-07-28/basic/index#_meta) is MCP's reserved field for additional metadata on a request that the model can't see or set. That's a deliberate anti-prompt injection choice: the host app decides which lease(s) are in scope, and the model can only ask the question.
 
-> [!CAUTION]
+> [!WARNING]
 > Without `document_ids`, a model can query any document the LeaseClear account can access. See [LeaseOps: prompt injection and the tenants table](https://github.com/amadeuserras/leaseops#security-prompt-injection-and-the-tenants-table).
 
 Python `ClientSession.call_tool` example:
