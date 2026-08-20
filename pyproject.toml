@@ -1,6 +1,6 @@
 [project]
 name = "leaseclear-mcp"
-version = "0.1.1"
+version = "0.1.2"
 description = "Standalone MCP server exposing LeaseClear Q&A as an MCP tool"
 readme = "README.md"
 license = "MIT"

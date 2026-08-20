@@ -2,6 +2,8 @@
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server that exposes [LeaseClear](https://github.com/amadeuserras/leaseclear) lease Q&A.
 
+<!-- mcp-name: io.github.amadeuserras/leaseclear-mcp -->
+
 ## Tools
 
 - `lease_qa` — ask one question about lease terms; returns an answer grounded in the lease, or states that the lease is silent
