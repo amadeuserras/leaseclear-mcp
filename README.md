@@ -93,6 +93,16 @@ Output:
 
 
 
+## Tech stack
+
+- Python 3.12
+- Model Context Protocol Python SDK (`mcp[cli]`) over stdio
+- `httpx` for LeaseClear API calls
+- Pydantic and `pydantic-settings` for schemas and config
+- `uv` and `uv_build` for running and packaging
+- pytest, Ruff, and Pyright for tests, linting, and type checking
+
+
 ## Project structure
 
 ```
